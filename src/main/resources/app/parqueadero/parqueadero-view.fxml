@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="700.0" prefWidth="1050.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.parqueadero.controller.ParqueaderoController">
+
+    <!-- BARRA SUPERIOR (HEADER) -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="header-bar" BorderPane.alignment="CENTER">
+            <VBox spacing="2.0" HBox.hgrow="ALWAYS">
+                <Label styleClass="header-title" text="🅿️ PARQUEADERO CONTROL CENTER" />
+                <Label styleClass="header-subtitle" text="Sistema integral de registro, control de flujo y gestión de vehículos" />
+            </VBox>
+            <Label styleClass="header-badge" text="ESTADO: ACTIVO" />
+        </HBox>
+    </top>
+
+    <!-- ÁREA CENTRAL Y LATERAL -->
+    <center>
+        <HBox spacing="18.0">
+            <padding>
+                <Insets bottom="16.0" left="20.0" right="20.0" top="16.0" />
+            </padding>
+
+            <!-- PANEL LATERAL: FORMULARIO CRUD -->
+            <VBox prefWidth="350.0" spacing="14.0" styleClass="card-panel">
+                <VBox spacing="4.0">
+                    <Label styleClass="card-title" text="Gestión de Vehículo" />
+                    <Label styleClass="card-description" text="Ingrese o actualice la información del vehículo" />
+                </VBox>
+
+                <!-- Campos de entrada -->
+                <VBox spacing="6.0">
+                    <Label styleClass="form-label" text="Placa del Vehículo:" />
+                    <TextField fx:id="txtPlaca" promptText="Ej: ABC-123" />
+                </VBox>
+
+                <VBox spacing="6.0">
+                    <Label styleClass="form-label" text="Tipo de Vehículo:" />
+                    <ComboBox fx:id="cbTipoVehiculo" maxWidth="1.7976931348623157E308" promptText="Seleccione el tipo" />
+                </VBox>
+
+                <VBox spacing="6.0">
+                    <Label styleClass="form-label" text="Nombre del Propietario:" />
+                    <TextField fx:id="txtPropietario" promptText="Ej: Carlos Mendoza" />
+                </VBox>
+
+                <VBox spacing="6.0">
+                    <Label styleClass="form-label" text="Fecha y Hora de Ingreso:" />
+                    <TextField fx:id="txtHoraIngreso" promptText="AAAA-MM-DD HH:mm:ss" />
+                </VBox>
+
+                <!-- Botones CRUD con diseño en cuadrícula -->
+                <GridPane hgap="10.0" vgap="10.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="NEVER" />
+                        <RowConstraints vgrow="NEVER" />
+                    </rowConstraints>
+
+                    <Button fx:id="btnRegistrar" maxWidth="1.7976931348623157E308" onAction="#onRegistrar" styleClass="btn, btn-save" text="➕ Registrar" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <Button fx:id="btnActualizar" maxWidth="1.7976931348623157E308" onAction="#onActualizar" styleClass="btn, btn-edit" text="✏️ Actualizar" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <Button fx:id="btnEliminar" maxWidth="1.7976931348623157E308" onAction="#onEliminar" styleClass="btn, btn-delete" text="🗑️ Salida / Borrar" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <Button fx:id="btnLimpiar" maxWidth="1.7976931348623157E308" onAction="#onLimpiar" styleClass="btn, btn-clear" text="🔄 Limpiar" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                </GridPane>
+            </VBox>
+
+            <!-- PANEL CENTRAL: BUSCADOR Y TABLEVIEW -->
+            <VBox spacing="14.0" styleClass="card-panel" HBox.hgrow="ALWAYS">
+                <!-- Barra de búsqueda y contador -->
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <TextField fx:id="txtBuscar" promptText="🔍 Buscar por placa, propietario o tipo..." HBox.hgrow="ALWAYS" />
+                    <HBox alignment="CENTER" styleClass="stat-chip">
+                        <Label fx:id="lblTotalVehiculos" styleClass="stat-chip-label" text="Total en Parqueadero: 0" />
+                    </HBox>
+                </HBox>
+
+                <!-- Tabla de Vehículos -->
+                <TableView fx:id="tblVehiculos" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colPlaca" minWidth="110.0" prefWidth="120.0" text="PLACA" />
+                        <TableColumn fx:id="colTipoVehiculo" minWidth="130.0" prefWidth="150.0" text="TIPO DE VEHÍCULO" />
+                        <TableColumn fx:id="colPropietario" minWidth="180.0" prefWidth="220.0" text="PROPIETARIO" />
+                        <TableColumn fx:id="colHoraIngreso" minWidth="160.0" prefWidth="180.0" text="HORA DE INGRESO" />
+                    </columns>
+                </TableView>
+            </VBox>
+        </HBox>
+    </center>
+
+    <!-- BARRA INFERIOR DE ESTADO -->
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="status-bar" BorderPane.alignment="CENTER">
+            <Label styleClass="status-label" text="Estado:" />
+            <Label fx:id="lblEstado" styleClass="status-label" text="Listo." />
+        </HBox>
+    </bottom>
+
+</BorderPane>
