@@ -1,7 +1,10 @@
 package app.parqueadero.controller;
 
 import app.parqueadero.model.Vehiculo;
+<<<<<<< HEAD
 import javafx.beans.property.SimpleStringProperty;
+=======
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -14,16 +17,24 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+<<<<<<< HEAD
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Locale;
+=======
+import java.util.ArrayList;
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
  * Controlador de la vista principal del sistema de gestión de parqueadero.
+<<<<<<< HEAD
  * Gestiona el CRUD en memoria a través de un ArrayList<Vehiculo> sincronizado con la TableView,
  * así como la liquidación y cobro por horas de estacionamiento al momento de la salida.
+=======
+ * Gestiona el CRUD en memoria a través de un ArrayList<Vehiculo> sincronizado con la TableView.
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
  */
 public class ParqueaderoController implements Initializable {
 
@@ -86,10 +97,14 @@ public class ParqueaderoController implements Initializable {
         colPlaca.setCellValueFactory(new PropertyValueFactory<>("placa"));
         colTipoVehiculo.setCellValueFactory(new PropertyValueFactory<>("tipoVehiculo"));
         colPropietario.setCellValueFactory(new PropertyValueFactory<>("propietario"));
+<<<<<<< HEAD
         colHoraIngreso.setCellValueFactory(cellData -> {
             Vehiculo v = cellData.getValue();
             return new SimpleStringProperty(v != null ? v.getHoraIngresoFormateada() : "");
         });
+=======
+        colHoraIngreso.setCellValueFactory(new PropertyValueFactory<>("horaIngreso"));
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
 
         tblVehiculos.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
@@ -125,12 +140,21 @@ public class ParqueaderoController implements Initializable {
     }
 
     /**
+<<<<<<< HEAD
      * Datos iniciales precargados en el ArrayList con diferentes rangos de tiempo para demostración.
      */
     private void cargarDatosDePrueba() {
         listaVehiculos.add(new Vehiculo("ABC-123", "Automóvil", "Carlos Mendoza", LocalDateTime.now().minusHours(2)));
         listaVehiculos.add(new Vehiculo("MTO-45B", "Motocicleta", "Andrea Suárez", LocalDateTime.now().minusHours(1).minusMinutes(15)));
         listaVehiculos.add(new Vehiculo("KLO-987", "Camioneta", "Fernando Torres", LocalDateTime.now().minusMinutes(35)));
+=======
+     * Datos iniciales precargados en el ArrayList para demostración.
+     */
+    private void cargarDatosDePrueba() {
+        listaVehiculos.add(new Vehiculo("ABC-123", "Automóvil", "Carlos Mendoza", LocalDateTime.now().minusHours(2).format(FORMATTER)));
+        listaVehiculos.add(new Vehiculo("MTO-45B", "Motocicleta", "Andrea Suárez", LocalDateTime.now().minusHours(1).minusMinutes(15).format(FORMATTER)));
+        listaVehiculos.add(new Vehiculo("KLO-987", "Camioneta", "Fernando Torres", LocalDateTime.now().minusMinutes(35).format(FORMATTER)));
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
     }
 
     /**
@@ -147,7 +171,11 @@ public class ParqueaderoController implements Initializable {
         txtPlaca.setDisable(true); // Bloquear placa como clave primaria de búsqueda
         cbTipoVehiculo.setValue(v.getTipoVehiculo());
         txtPropietario.setText(v.getPropietario());
+<<<<<<< HEAD
         txtHoraIngreso.setText(v.getHoraIngresoFormateada());
+=======
+        txtHoraIngreso.setText(v.getHoraIngreso());
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
 
         btnRegistrar.setDisable(true);
         btnActualizar.setDisable(false);
@@ -158,14 +186,22 @@ public class ParqueaderoController implements Initializable {
 
     /**
      * CRUD: Registrar (Crear)
+<<<<<<< HEAD
      * Valida y agrega un nuevo vehículo al ArrayList<Vehiculo> con su fecha y hora en LocalDateTime.
+=======
+     * Valida y agrega un nuevo vehículo al ArrayList<Vehiculo>.
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
      */
     @FXML
     public void onRegistrar() {
         String placa = txtPlaca.getText().trim().toUpperCase();
         String tipo = cbTipoVehiculo.getValue();
         String propietario = txtPropietario.getText().trim();
+<<<<<<< HEAD
         String horaTexto = txtHoraIngreso.getText().trim();
+=======
+        String hora = txtHoraIngreso.getText().trim();
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
 
         // Validaciones de datos obligatorios
         if (placa.isEmpty() || propietario.isEmpty()) {
@@ -185,6 +221,7 @@ public class ParqueaderoController implements Initializable {
             return;
         }
 
+<<<<<<< HEAD
         LocalDateTime horaIngreso;
         if (horaTexto.isEmpty()) {
             horaIngreso = LocalDateTime.now();
@@ -198,6 +235,13 @@ public class ParqueaderoController implements Initializable {
         }
 
         Vehiculo nuevoVehiculo = new Vehiculo(placa, tipo, propietario, horaIngreso);
+=======
+        if (hora.isEmpty()) {
+            hora = LocalDateTime.now().format(FORMATTER);
+        }
+
+        Vehiculo nuevoVehiculo = new Vehiculo(placa, tipo, propietario, hora);
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
         listaVehiculos.add(nuevoVehiculo);
 
         listarVehiculos();
@@ -220,13 +264,18 @@ public class ParqueaderoController implements Initializable {
 
         String propietario = txtPropietario.getText().trim();
         String tipo = cbTipoVehiculo.getValue();
+<<<<<<< HEAD
         String horaTexto = txtHoraIngreso.getText().trim();
+=======
+        String hora = txtHoraIngreso.getText().trim();
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
 
         if (propietario.isEmpty()) {
             mostrarAlerta(Alert.AlertType.WARNING, "Campos Incompletos", "El nombre del propietario no puede quedar vacío.");
             return;
         }
 
+<<<<<<< HEAD
         LocalDateTime horaIngreso = seleccionado.getHoraIngreso();
         if (!horaTexto.isEmpty()) {
             try {
@@ -241,6 +290,14 @@ public class ParqueaderoController implements Initializable {
         seleccionado.setTipoVehiculo(tipo);
         seleccionado.setPropietario(propietario);
         seleccionado.setHoraIngreso(horaIngreso);
+=======
+        // Actualizar en el objeto perteneciente al ArrayList
+        seleccionado.setTipoVehiculo(tipo);
+        seleccionado.setPropietario(propietario);
+        if (!hora.isEmpty()) {
+            seleccionado.setHoraIngreso(hora);
+        }
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
 
         listarVehiculos();
         tblVehiculos.refresh();
@@ -249,15 +306,21 @@ public class ParqueaderoController implements Initializable {
     }
 
     /**
+<<<<<<< HEAD
      * CRUD: Eliminar / Salida y Cobro
      * Procesa la salida del vehículo seleccionado calculando el tiempo total transcurrido
      * y el monto exacto a pagar aplicando la tarifa fija por hora (hora o fracción).
      * Muestra una alerta (Alert) detallada y solicita confirmación antes de removerlo de la lista.
+=======
+     * CRUD: Eliminar (Registrar Salida)
+     * Remueve el vehículo del ArrayList<Vehiculo> tras confirmación.
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
      */
     @FXML
     public void onEliminar() {
         Vehiculo seleccionado = tblVehiculos.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
+<<<<<<< HEAD
             mostrarAlerta(Alert.AlertType.WARNING, "Selección Requerida", "Seleccione un vehículo de la tabla para procesar su cobro y salida.");
             return;
         }
@@ -305,10 +368,28 @@ public class ParqueaderoController implements Initializable {
                     String.format("El vehículo %s ha cancelado %s y ha salido del parqueadero.", seleccionado.getPlaca(), totalStr));
         } else {
             lblEstado.setText("Operación de salida cancelada para el vehículo " + seleccionado.getPlaca());
+=======
+            mostrarAlerta(Alert.AlertType.WARNING, "Selección Requerida", "Seleccione un vehículo de la tabla para registrar salida.");
+            return;
+        }
+
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmacion.setTitle("Confirmar Salida/Eliminación");
+        confirmacion.setHeaderText("¿Desea registrar la salida del vehículo " + seleccionado.getPlaca() + "?");
+        confirmacion.setContentText("Esta acción eliminará el vehículo del registro actual del parqueadero.");
+
+        Optional<ButtonType> resultado = confirmacion.showAndWait();
+        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+            listaVehiculos.remove(seleccionado);
+            listarVehiculos();
+            limpiarFormulario();
+            lblEstado.setText("Vehículo " + seleccionado.getPlaca() + " retirado del parqueadero.");
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
         }
     }
 
     /**
+<<<<<<< HEAD
      * Alias para compatibilidad con botones o invocaciones de 'Salida / Cobrar'.
      */
     @FXML
@@ -317,6 +398,8 @@ public class ParqueaderoController implements Initializable {
     }
 
     /**
+=======
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
      * Limpia los campos del formulario y deselecciona la tabla.
      */
     @FXML

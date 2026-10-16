@@ -1,13 +1,19 @@
 package app.parqueadero.model;
 
+<<<<<<< HEAD
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+=======
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
 import java.util.Objects;
 
 /**
  * Modelo que representa un vehículo dentro del sistema de parqueadero.
+<<<<<<< HEAD
  * Gestiona la fecha y hora de ingreso mediante LocalDateTime y provee
  * la lógica de negocio para liquidar el cobro por horas de estacionamiento.
  */
@@ -15,10 +21,17 @@ public class Vehiculo {
 
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public static final double TARIFA_POR_HORA = 2000.0;
+=======
+ */
+public class Vehiculo {
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
 
     private String placa;
     private String tipoVehiculo;
     private String propietario;
+<<<<<<< HEAD
     private LocalDateTime horaIngreso;
 
     public Vehiculo() {
@@ -150,6 +163,26 @@ public class Vehiculo {
     // GETTERS Y SETTERS
     // ==========================================
 
+=======
+    private String horaIngreso;
+
+    public Vehiculo() {
+        this("", "", "", LocalDateTime.now().format(FORMATTER));
+    }
+
+    public Vehiculo(String placa, String tipoVehiculo, String propietario) {
+        this(placa, tipoVehiculo, propietario, LocalDateTime.now().format(FORMATTER));
+    }
+
+    public Vehiculo(String placa, String tipoVehiculo, String propietario, String horaIngreso) {
+        this.placa = (placa != null) ? placa.trim().toUpperCase() : "";
+        this.tipoVehiculo = tipoVehiculo;
+        this.propietario = propietario;
+        this.horaIngreso = horaIngreso;
+    }
+
+    // Getters y Setters
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
     public String getPlaca() {
         return placa;
     }
@@ -174,6 +207,7 @@ public class Vehiculo {
         this.propietario = propietario;
     }
 
+<<<<<<< HEAD
     public LocalDateTime getHoraIngreso() {
         return horaIngreso;
     }
@@ -191,6 +225,14 @@ public class Vehiculo {
      */
     public String getHoraIngresoFormateada() {
         return (horaIngreso != null) ? horaIngreso.format(FORMATTER) : "";
+=======
+    public String getHoraIngreso() {
+        return horaIngreso;
+    }
+
+    public void setHoraIngreso(String horaIngreso) {
+        this.horaIngreso = horaIngreso;
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
     }
 
     @Override
@@ -212,7 +254,11 @@ public class Vehiculo {
                 "placa='" + placa + '\'' +
                 ", tipoVehiculo='" + tipoVehiculo + '\'' +
                 ", propietario='" + propietario + '\'' +
+<<<<<<< HEAD
                 ", horaIngreso=" + getHoraIngresoFormateada() +
+=======
+                ", horaIngreso='" + horaIngreso + '\'' +
+>>>>>>> 5f104091666ebabfd107cec0031a1953cc8afdd2
                 '}';
     }
 }
