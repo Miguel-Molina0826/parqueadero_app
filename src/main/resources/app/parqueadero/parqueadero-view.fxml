@@ -76,7 +76,7 @@
 
                     <Button fx:id="btnRegistrar" maxWidth="1.7976931348623157E308" onAction="#onRegistrar" styleClass="btn, btn-save" text="➕ Registrar" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                     <Button fx:id="btnActualizar" maxWidth="1.7976931348623157E308" onAction="#onActualizar" styleClass="btn, btn-edit" text="✏️ Actualizar" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                    <Button fx:id="btnEliminar" maxWidth="1.7976931348623157E308" onAction="#onEliminar" styleClass="btn, btn-delete" text="🗑️ Salida / Borrar" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <Button fx:id="btnEliminar" maxWidth="1.7976931348623157E308" onAction="#onEliminar" styleClass="btn, btn-delete" text="💳 Salida / Cobrar" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                     <Button fx:id="btnLimpiar" maxWidth="1.7976931348623157E308" onAction="#onLimpiar" styleClass="btn, btn-clear" text="🔄 Limpiar" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 </GridPane>
             </VBox>

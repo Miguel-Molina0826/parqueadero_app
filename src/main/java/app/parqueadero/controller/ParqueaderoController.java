@@ -1,6 +1,7 @@
 package app.parqueadero.controller;
 
 import app.parqueadero.model.Vehiculo;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -13,13 +14,16 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
  * Controlador de la vista principal del sistema de gestión de parqueadero.
- * Gestiona el CRUD en memoria a través de un ArrayList<Vehiculo> sincronizado con la TableView.
+ * Gestiona el CRUD en memoria a través de un ArrayList<Vehiculo> sincronizado con la TableView,
+ * así como la liquidación y cobro por horas de estacionamiento al momento de la salida.
  */
 public class ParqueaderoController implements Initializable {
 
@@ -82,7 +86,10 @@ public class ParqueaderoController implements Initializable {
         colPlaca.setCellValueFactory(new PropertyValueFactory<>("placa"));
         colTipoVehiculo.setCellValueFactory(new PropertyValueFactory<>("tipoVehiculo"));
         colPropietario.setCellValueFactory(new PropertyValueFactory<>("propietario"));
-        colHoraIngreso.setCellValueFactory(new PropertyValueFactory<>("horaIngreso"));
+        colHoraIngreso.setCellValueFactory(cellData -> {
+            Vehiculo v = cellData.getValue();
+            return new SimpleStringProperty(v != null ? v.getHoraIngresoFormateada() : "");
+        });
 
         tblVehiculos.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
@@ -118,12 +125,12 @@ public class ParqueaderoController implements Initializable {
     }
 
     /**
-     * Datos iniciales precargados en el ArrayList para demostración.
+     * Datos iniciales precargados en el ArrayList con diferentes rangos de tiempo para demostración.
      */
     private void cargarDatosDePrueba() {
-        listaVehiculos.add(new Vehiculo("ABC-123", "Automóvil", "Carlos Mendoza", LocalDateTime.now().minusHours(2).format(FORMATTER)));
-        listaVehiculos.add(new Vehiculo("MTO-45B", "Motocicleta", "Andrea Suárez", LocalDateTime.now().minusHours(1).minusMinutes(15).format(FORMATTER)));
-        listaVehiculos.add(new Vehiculo("KLO-987", "Camioneta", "Fernando Torres", LocalDateTime.now().minusMinutes(35).format(FORMATTER)));
+        listaVehiculos.add(new Vehiculo("ABC-123", "Automóvil", "Carlos Mendoza", LocalDateTime.now().minusHours(2)));
+        listaVehiculos.add(new Vehiculo("MTO-45B", "Motocicleta", "Andrea Suárez", LocalDateTime.now().minusHours(1).minusMinutes(15)));
+        listaVehiculos.add(new Vehiculo("KLO-987", "Camioneta", "Fernando Torres", LocalDateTime.now().minusMinutes(35)));
     }
 
     /**
@@ -140,7 +147,7 @@ public class ParqueaderoController implements Initializable {
         txtPlaca.setDisable(true); // Bloquear placa como clave primaria de búsqueda
         cbTipoVehiculo.setValue(v.getTipoVehiculo());
         txtPropietario.setText(v.getPropietario());
-        txtHoraIngreso.setText(v.getHoraIngreso());
+        txtHoraIngreso.setText(v.getHoraIngresoFormateada());
 
         btnRegistrar.setDisable(true);
         btnActualizar.setDisable(false);
@@ -151,14 +158,14 @@ public class ParqueaderoController implements Initializable {
 
     /**
      * CRUD: Registrar (Crear)
-     * Valida y agrega un nuevo vehículo al ArrayList<Vehiculo>.
+     * Valida y agrega un nuevo vehículo al ArrayList<Vehiculo> con su fecha y hora en LocalDateTime.
      */
     @FXML
     public void onRegistrar() {
         String placa = txtPlaca.getText().trim().toUpperCase();
         String tipo = cbTipoVehiculo.getValue();
         String propietario = txtPropietario.getText().trim();
-        String hora = txtHoraIngreso.getText().trim();
+        String horaTexto = txtHoraIngreso.getText().trim();
 
         // Validaciones de datos obligatorios
         if (placa.isEmpty() || propietario.isEmpty()) {
@@ -178,11 +185,19 @@ public class ParqueaderoController implements Initializable {
             return;
         }
 
-        if (hora.isEmpty()) {
-            hora = LocalDateTime.now().format(FORMATTER);
+        LocalDateTime horaIngreso;
+        if (horaTexto.isEmpty()) {
+            horaIngreso = LocalDateTime.now();
+        } else {
+            try {
+                horaIngreso = LocalDateTime.parse(horaTexto, FORMATTER);
+            } catch (DateTimeParseException e) {
+                mostrarAlerta(Alert.AlertType.WARNING, "Formato Inválido", "La hora de ingreso debe tener el formato: yyyy-MM-dd HH:mm:ss");
+                return;
+            }
         }
 
-        Vehiculo nuevoVehiculo = new Vehiculo(placa, tipo, propietario, hora);
+        Vehiculo nuevoVehiculo = new Vehiculo(placa, tipo, propietario, horaIngreso);
         listaVehiculos.add(nuevoVehiculo);
 
         listarVehiculos();
@@ -205,19 +220,27 @@ public class ParqueaderoController implements Initializable {
 
         String propietario = txtPropietario.getText().trim();
         String tipo = cbTipoVehiculo.getValue();
-        String hora = txtHoraIngreso.getText().trim();
+        String horaTexto = txtHoraIngreso.getText().trim();
 
         if (propietario.isEmpty()) {
             mostrarAlerta(Alert.AlertType.WARNING, "Campos Incompletos", "El nombre del propietario no puede quedar vacío.");
             return;
         }
 
+        LocalDateTime horaIngreso = seleccionado.getHoraIngreso();
+        if (!horaTexto.isEmpty()) {
+            try {
+                horaIngreso = LocalDateTime.parse(horaTexto, FORMATTER);
+            } catch (DateTimeParseException e) {
+                mostrarAlerta(Alert.AlertType.WARNING, "Formato Inválido", "La hora de ingreso debe tener el formato: yyyy-MM-dd HH:mm:ss");
+                return;
+            }
+        }
+
         // Actualizar en el objeto perteneciente al ArrayList
         seleccionado.setTipoVehiculo(tipo);
         seleccionado.setPropietario(propietario);
-        if (!hora.isEmpty()) {
-            seleccionado.setHoraIngreso(hora);
-        }
+        seleccionado.setHoraIngreso(horaIngreso);
 
         listarVehiculos();
         tblVehiculos.refresh();
@@ -226,29 +249,71 @@ public class ParqueaderoController implements Initializable {
     }
 
     /**
-     * CRUD: Eliminar (Registrar Salida)
-     * Remueve el vehículo del ArrayList<Vehiculo> tras confirmación.
+     * CRUD: Eliminar / Salida y Cobro
+     * Procesa la salida del vehículo seleccionado calculando el tiempo total transcurrido
+     * y el monto exacto a pagar aplicando la tarifa fija por hora (hora o fracción).
+     * Muestra una alerta (Alert) detallada y solicita confirmación antes de removerlo de la lista.
      */
     @FXML
     public void onEliminar() {
         Vehiculo seleccionado = tblVehiculos.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Selección Requerida", "Seleccione un vehículo de la tabla para registrar salida.");
+            mostrarAlerta(Alert.AlertType.WARNING, "Selección Requerida", "Seleccione un vehículo de la tabla para procesar su cobro y salida.");
             return;
         }
 
-        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmacion.setTitle("Confirmar Salida/Eliminación");
-        confirmacion.setHeaderText("¿Desea registrar la salida del vehículo " + seleccionado.getPlaca() + "?");
-        confirmacion.setContentText("Esta acción eliminará el vehículo del registro actual del parqueadero.");
+        LocalDateTime horaSalida = LocalDateTime.now();
+        long horasACobrar = seleccionado.calcularHorasACobrar(horaSalida);
+        double tarifaPorHora = Vehiculo.TARIFA_POR_HORA;
+        double totalAPagar = seleccionado.calcularCobro(horaSalida, tarifaPorHora);
+        String tiempoFormateado = seleccionado.obtenerTiempoFormateado(horaSalida);
 
-        Optional<ButtonType> resultado = confirmacion.showAndWait();
-        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+        String tarifaStr = String.format(Locale.GERMANY, "$%,d COP", (long) tarifaPorHora);
+        String totalStr = String.format(Locale.GERMANY, "$%,d COP", (long) totalAPagar);
+
+        Alert alertaCobro = new Alert(Alert.AlertType.CONFIRMATION);
+        alertaCobro.setTitle("Liquidación de Parqueadero - Salida y Cobro");
+        alertaCobro.setHeaderText("Recibo de Salida - Vehículo [" + seleccionado.getPlaca() + "]");
+
+        String mensaje = "📋 INFORMACIÓN DEL VEHÍCULO:\n"
+                + "   • Placa: " + seleccionado.getPlaca() + "\n"
+                + "   • Propietario: " + seleccionado.getPropietario() + "\n"
+                + "   • Tipo: " + seleccionado.getTipoVehiculo() + "\n"
+                + "   • Hora de Ingreso: " + seleccionado.getHoraIngresoFormateada() + "\n"
+                + "   • Hora de Salida:  " + horaSalida.format(FORMATTER) + "\n\n"
+                + "⏱️ TIEMPO TRANSCURRIDO:\n"
+                + "   • Tiempo estacionado: " + tiempoFormateado + "\n"
+                + "   • Horas a liquidar (hora o fracción): " + horasACobrar + " hora(s)\n\n"
+                + "💰 LIQUIDACIÓN DE PAGO:\n"
+                + "   • Tarifa por hora: " + tarifaStr + "\n"
+                + "   • TOTAL EXACTO A PAGAR: " + totalStr + "\n\n"
+                + "¿Desea confirmar el cobro y registrar la salida del vehículo?";
+
+        alertaCobro.setContentText(mensaje);
+
+        ButtonType btnConfirmar = new ButtonType("Pagar y Registrar Salida", ButtonBar.ButtonData.OK_DONE);
+        ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alertaCobro.getButtonTypes().setAll(btnConfirmar, btnCancelar);
+
+        Optional<ButtonType> resultado = alertaCobro.showAndWait();
+        if (resultado.isPresent() && resultado.get() == btnConfirmar) {
             listaVehiculos.remove(seleccionado);
             listarVehiculos();
             limpiarFormulario();
-            lblEstado.setText("Vehículo " + seleccionado.getPlaca() + " retirado del parqueadero.");
+            lblEstado.setText(String.format("Salida procesada: %s | Pago recibido: %s", seleccionado.getPlaca(), totalStr));
+            mostrarAlerta(Alert.AlertType.INFORMATION, "Salida Registrada con Éxito",
+                    String.format("El vehículo %s ha cancelado %s y ha salido del parqueadero.", seleccionado.getPlaca(), totalStr));
+        } else {
+            lblEstado.setText("Operación de salida cancelada para el vehículo " + seleccionado.getPlaca());
         }
+    }
+
+    /**
+     * Alias para compatibilidad con botones o invocaciones de 'Salida / Cobrar'.
+     */
+    @FXML
+    public void onSalidaCobrar() {
+        onEliminar();
     }
 
     /**
